@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { store } from '../../app/store'
 import { useAppSelector } from '../../app/hooks'
 import styles from './Search.module.css'
-import { setSearchTerm } from './SearchSlice'
+import { setSearchTerm, setSearchSort } from './SearchSlice'
 import Repo, { GitHubRepo } from './Repo'
 
 interface GitHubSearchResponse {
@@ -16,9 +16,22 @@ export default function Search() {
     ])
 
     let searchTerm = useAppSelector(state => state.search.searchTerm) 
+    let searchSort = useAppSelector(state => state.search.searchSort) 
     
     function search() {
-        fetch(`https://api.github.com/search/repositories?q=${searchTerm}`)
+        // We shouldnt search if the search term is blank
+        if (searchTerm.length === 0) {
+            return
+        }
+
+        // https://docs.github.com/en/rest/reference/search#search-repositories
+        let searchRequestUrl = [
+            "https://api.github.com/search/repositories?q=",
+            searchTerm,
+            `&sort=${searchSort}`
+        ].join("")
+
+        fetch(searchRequestUrl)
             .then(response => response.json())
             .then(response => response as GitHubSearchResponse)
             .then(response => setSearchResults(response.items))
@@ -42,6 +55,21 @@ export default function Search() {
                 }
             }}
         />
+
+        {/* Select sort */}
+        <select
+            value={searchSort}
+            onChange={event => {
+                let element = event.target as HTMLSelectElement
+                let selected = element.value
+                store.dispatch(setSearchSort(selected))
+            }}
+        >
+            <option value="best-match">best match (default)</option>
+            <option value="stars">stars</option>
+            <option value="forks">forks</option>
+            <option value="updated">updated</option>
+        </select>
 
         {/* The list of search results */}
         <div>{
