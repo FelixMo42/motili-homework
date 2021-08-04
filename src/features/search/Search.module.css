@@ -10,3 +10,8 @@
 .repoName {
     font-weight: bold;
 }
+
+.language {
+    background-color: rgb(100, 100, 100);
+    border-radius: 5px;
+}
