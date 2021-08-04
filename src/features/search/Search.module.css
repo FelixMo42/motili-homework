@@ -1,0 +1,12 @@
+.search {
+    padding: 5px;
+    width: 100%;
+}
+
+.repo {
+    padding: 5px;
+}
+
+.repoName {
+    font-weight: bold;
+}
