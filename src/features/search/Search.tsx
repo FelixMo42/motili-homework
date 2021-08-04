@@ -1,5 +1,8 @@
 import React, { useState } from 'react'
+import { store } from '../../app/store'
+import { useAppSelector } from '../../app/hooks'
 import styles from './Search.module.css'
+import { setSearchTerm } from './SearchSlice'
 import Repo, { GitHubRepo } from './Repo'
 
 interface GitHubSearchResponse {
@@ -9,11 +12,13 @@ interface GitHubSearchResponse {
 export default function Search() {
     let [searchResults, setSearchResults] = useState<GitHubRepo[]>([
         { id: 0, name: "example", owner: { login: "chonk", id: 0 }},
-        { id: 1, name: "a;uebiua", owner: { login: "god", id: 1 }}
+        { id: 1, name: "abue biua", owner: { login: "god", id: 1 }}
     ])
+
+    let searchTerm = useAppSelector(state => state.search.searchTerm) 
     
-    function submit(searchString: String) {
-        fetch(`https://api.github.com/search/repositories?q=${searchString}`)
+    function search() {
+        fetch(`https://api.github.com/search/repositories?q=${searchTerm}`)
             .then(response => response.json())
             .then(response => response as GitHubSearchResponse)
             .then(response => setSearchResults(response.items))
@@ -26,10 +31,14 @@ export default function Search() {
             type="text"
             className={styles.search}
             placeholder="search"
+            onInput={event => {
+                let element = event.target as HTMLInputElement
+                let value = element.value
+                store.dispatch(setSearchTerm(value))
+            }}
             onKeyUp={event => {
                 if ( event.key === "Enter" ) {
-                    let inputValue = (event.target as HTMLInputElement).value
-                    submit(inputValue)
+                    search()
                 }
             }}
         />
