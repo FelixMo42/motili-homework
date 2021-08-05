@@ -71,46 +71,51 @@ export default function Search() {
             }}
         />
 
-        {/* Select sort */}
-        <select
-            value={searchSort}
-            onChange={event => {
-                let element = event.target as HTMLSelectElement
-                let selected = element.value
-                store.dispatch(setSearchSort(selected))
-            }}
-        >
-            <option value="best-match">best match (default)</option>
-            <option value="stars">stars</option>
-            <option value="forks">forks</option>
-            <option value="updated">updated</option>
-        </select>
-
-        {/* allowed languages */}
-        <div>{languages.map(language =>
-            <span
-                key={language}
-                className={styles.language}
-                placeholder="language"
-                onClick={event => {
-                    let value = (event.target as HTMLElement).innerHTML
-                    store.dispatch(removeLanguage(value))
+        <div>
+            {/* allowed languages */}
+            <select
+                value={searchSort}
+                className={styles.languageSelect}
+                onChange={event => {
+                    let element = event.target as HTMLSelectElement
+                    let selected = element.value
+                    store.dispatch(setSearchSort(selected))
                 }}
-            >{language}</span>
-        )}</div>
-        
-        <input
-            type="text"
-            placeholder="language"
-            onKeyUp={event => {
-                if ( event.key === "Enter" ) {
-                    let element = event.target as HTMLInputElement
-                    let value = element.value
-                    element.value = ""
-                    store.dispatch(addLanguage(value))
+            >
+                <option value="best-match">best match</option>
+                <option value="stars">stars</option>
+                <option value="forks">forks</option>
+                <option value="updated">updated</option>
+            </select>
+
+            {/* Select sort */}
+            {languages.map(language =>
+                <span
+                    key={language}
+                    className={styles.language}
+                    placeholder="language"
+                    onClick={event => {
+                        let value = (event.target as HTMLElement).innerHTML
+                        store.dispatch(removeLanguage(value))
+                    }}
+                >{language}</span>
+            )}
+
+            <input
+                type="text"
+                className={styles.languageInput}
+                placeholder="language"
+                onKeyUp={event => {
+                    if ( event.key === "Enter" ) {
+                        let element = event.target as HTMLInputElement
+                        let value = element.value
+                        element.value = ""
+                        store.dispatch(addLanguage(value))
+                    }
                 }
-            }
-        }/>
+            }/>
+        </div>
+        
 
         {/* The list of search results */}
         <div>{

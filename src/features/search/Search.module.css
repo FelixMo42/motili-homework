@@ -1,6 +1,5 @@
 .search {
-    padding: 5px;
-    width: 100%;
+    width: 200px;
 }
 
 .repo {
@@ -12,6 +11,26 @@
 }
 
 .language {
-    background-color: rgb(100, 100, 100);
+    background-color: rgb(150, 150, 150);
     border-radius: 5px;
+    margin: 0px 3px;
+    padding: 0px 5px;
 }
+
+.languageInput {
+    margin: 2px 0px;
+    border: none;
+}
+
+.languageInput:active {
+    border: none;
+}
+
+.languageSelect {
+    border: none;
+}
+
+.languageSelect::after {
+    position: relative;
+}
+
