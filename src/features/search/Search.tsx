@@ -1,8 +1,9 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { store } from '../../app/store'
 import { useAppSelector } from '../../app/hooks'
 import styles from './Search.module.css'
-import Repo, { GitHubRepo } from './Repo'
+import Repo from './Repo'
+import { GitHubRepo, GitHubSearchResponse } from '../../common/github'
 import {
     setSearchTerm,
     setSearchSort,
@@ -10,18 +11,16 @@ import {
     removeLanguage
 } from './SearchSlice'
 
-interface GitHubSearchResponse {
-    items: GitHubRepo[]
-}
-
 export default function Search() {
     let [searchResults, setSearchResults] = useState<GitHubRepo[]>([])
 
+    // Grab the search parts from the state.
     let searchTerm = useAppSelector(state => state.search.searchTerm) 
     let searchSort = useAppSelector(state => state.search.searchSort) 
     let languages = useAppSelector(state => state.search.languages) 
     
-    function search() {
+    // Whenever the search parts are updated, reload the search results.
+    useEffect(() => {
         // We shouldnt search if the search term is blank
         if (searchTerm.length === 0) {
             return
@@ -48,7 +47,7 @@ export default function Search() {
             .then(response => response as GitHubSearchResponse)
             .then(response => setSearchResults(response.items))
             .catch(console.log)
-    }
+    }, [searchTerm, searchSort, languages])
 
     return <div>
         {/* The search box */}
@@ -60,11 +59,6 @@ export default function Search() {
                 let element = event.target as HTMLInputElement
                 let value = element.value
                 store.dispatch(setSearchTerm(value))
-            }}
-            onKeyUp={event => {
-                if ( event.key === "Enter" ) {
-                    search()
-                }
             }}
         />
 
@@ -109,8 +103,8 @@ export default function Search() {
                         element.value = ""
                         store.dispatch(addLanguage(value))
                     }
-                }
-            }/>
+                }}
+            />
         </div>
         
 

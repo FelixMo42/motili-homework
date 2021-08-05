@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { GitHubRepo } from '../search/Repo'
+import { GitHubRepo } from '../../common/github'
 
 interface AboutParams {
     match: {
