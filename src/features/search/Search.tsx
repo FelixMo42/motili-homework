@@ -15,10 +15,7 @@ interface GitHubSearchResponse {
 }
 
 export default function Search() {
-    let [searchResults, setSearchResults] = useState<GitHubRepo[]>([
-        { id: 0, name: "example", owner: { login: "chonk", id: 0 }},
-        { id: 1, name: "abue biua", owner: { login: "god", id: 1 }}
-    ])
+    let [searchResults, setSearchResults] = useState<GitHubRepo[]>([])
 
     let searchTerm = useAppSelector(state => state.search.searchTerm) 
     let searchSort = useAppSelector(state => state.search.searchSort) 
