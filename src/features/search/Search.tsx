@@ -11,6 +11,76 @@ import {
     removeLanguage
 } from './SearchSlice'
 
+export function LangaugeFilter() {
+    let languages = useAppSelector(state => state.search.languages) 
+
+    return <span className={styles.languageFilter}>
+        {languages.map(language =>
+            <span
+                key={language}
+                className={styles.language}
+                placeholder="language"
+                onClick={event => {
+                    let value = (event.target as HTMLElement).innerHTML
+                    store.dispatch(removeLanguage(value))
+                }}
+            >{language}</span>
+        )}
+
+        <input
+            type="text"
+            className={styles.languageInput}
+            placeholder="language"
+            onKeyUp={event => {
+                if ( event.key === "Enter" ) {
+                    let element = event.target as HTMLInputElement
+                    let value = element.value
+                    element.value = ""
+                    store.dispatch(addLanguage(value))
+                }
+            }}
+        />
+    </span>
+}
+
+function LangaugeTerm() {
+    let searchTerm = useAppSelector(state => state.search.searchTerm) 
+
+    return <span className={styles.searchTerm}>
+        <input
+            type="text"
+            placeholder="search"
+            value={searchTerm}
+            onInput={event => {
+                let element = event.target as HTMLInputElement
+                let value = element.value
+                store.dispatch(setSearchTerm(value))
+            }}
+        />
+    </span>
+}
+
+function LangaugeSortSelector() {
+    let searchSort = useAppSelector(state => state.search.searchSort) 
+    
+    return <div className={styles.languageSort}>
+        <select
+            value={searchSort}
+            className={styles.languageSelect}
+            onChange={event => {
+                let element = event.target as HTMLSelectElement
+                let selected = element.value
+                store.dispatch(setSearchSort(selected))
+            }}
+        >
+            <option value="best-match">best match</option>
+            <option value="stars">stars</option>
+            <option value="forks">forks</option>
+            <option value="updated">updated</option>
+        </select>
+    </div>
+}
+
 export default function Search() {
     let [searchResults, setSearchResults] = useState<GitHubRepo[]>([])
 
@@ -49,69 +119,17 @@ export default function Search() {
             .catch(console.log)
     }, [searchTerm, searchSort, languages])
 
-    return <div>
-        {/* The search box */}
-        <input
-            type="text"
-            className={styles.search}
-            placeholder="search"
-            onInput={event => {
-                let element = event.target as HTMLInputElement
-                let value = element.value
-                store.dispatch(setSearchTerm(value))
-            }}
-        />
+    return <div className={styles.search}>
+        {/* Display search box. */}
+        <LangaugeTerm />
 
         <div>
-            {/* allowed languages */}
-            <select
-                value={searchSort}
-                className={styles.languageSelect}
-                onChange={event => {
-                    let element = event.target as HTMLSelectElement
-                    let selected = element.value
-                    store.dispatch(setSearchSort(selected))
-                }}
-            >
-                <option value="best-match">best match</option>
-                <option value="stars">stars</option>
-                <option value="forks">forks</option>
-                <option value="updated">updated</option>
-            </select>
-
-            {/* Select sort */}
-            {languages.map(language =>
-                <span
-                    key={language}
-                    className={styles.language}
-                    placeholder="language"
-                    onClick={event => {
-                        let value = (event.target as HTMLElement).innerHTML
-                        store.dispatch(removeLanguage(value))
-                    }}
-                >{language}</span>
-            )}
-
-            <input
-                type="text"
-                className={styles.languageInput}
-                placeholder="language"
-                onKeyUp={event => {
-                    if ( event.key === "Enter" ) {
-                        let element = event.target as HTMLInputElement
-                        let value = element.value
-                        element.value = ""
-                        store.dispatch(addLanguage(value))
-                    }
-                }}
-            />
+            <LangaugeSortSelector />
+            <LangaugeFilter />
         </div>
-        
 
-        {/* The list of search results */}
-        <div>{
-            searchResults.map(repo => <Repo key={repo.id} repo={repo}/>)
-        }</div>
+        {/* Display search results. */}
+        {searchResults.map(repo => <Repo key={repo.id} repo={repo} />)}
     </div>
 }
 
