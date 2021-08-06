@@ -5,19 +5,23 @@ You must have npm and node installed to use this project.
 
 ### Setup ###
 
-`git clone https://github.com/FelixMo42/motili-homework.git`
-
-`cd motili-homework`
-
-`npm install`
+```
+git clone https://github.com/FelixMo42/motili-homework.git`
+cd motili-homework
+npm install
+```
 
 ### Run with local dev server ###
 
-`npm start`
+```
+npm start
+```
 
 ### Test ###
 
-`npm test`
+```
+npm test
+```
 
 ## Requirements ##
 
