@@ -1,3 +1,22 @@
+
+## Instructions ##
+
+You must have npm and node installed to use this project.
+
+## Setup ##
+
+`git clone https://github.com/FelixMo42/motili-homework.git`
+`cd motili-homework`
+`npm install`
+
+## Run with local dev server ##
+
+`npm start`
+
+## Test ##
+
+`npm test`
+
 ## Requirements ##
 
 ### 1. Search Input ###
@@ -29,13 +48,13 @@ The search results are reload every time you add or remove a language.
 
 The detailed page has all the request info: owner name, repo name, description, stars & languages.
 It just displays this as some text, nothing fancy.
-I figured this was more about if I could use a router. 
+I figured this was more about if I could use a router.
 
 ### 6. Responsive Design ###
 
 Its not very responsive, but the Search page does scale and looks pretty good on mobile.
-The about page is literaly just the divs tags with some text, it dosent even have css.
-I have some actually good responsive design befor for php templates, so I can show you that if you want.
+The about page is literaly just the divs tags with some text.
+I have some actually good responsive design for php templates I've made, so I can show you that if you want.
 
 ### Bonus ###
 
