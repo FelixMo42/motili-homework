@@ -3,12 +3,11 @@ import { store } from '../../app/store'
 import { useAppSelector } from '../../app/hooks'
 import styles from './Search.module.css'
 import Repo from './Repo'
-import { GitHubRepo, GitHubSearchResponse } from '../../common/github'
+import { GitHubRepo } from '../../common/github'
 import {
-    setSearchTerm,
-    setSearchSort,
-    addLanguage,
-    removeLanguage
+    setSearchTerm, setSearchSort,
+    addLanguage, removeLanguage,
+    searchRepos
 } from './SearchSlice'
 
 export function LangaugeFilter() {
@@ -84,40 +83,13 @@ function LangaugeSortSelector() {
 export default function Search() {
     let [searchResults, setSearchResults] = useState<GitHubRepo[]>([])
 
-    // Grab the search parts from the state.
-    let searchTerm = useAppSelector(state => state.search.searchTerm) 
-    let searchSort = useAppSelector(state => state.search.searchSort) 
-    let languages = useAppSelector(state => state.search.languages) 
-    
-    // Whenever the search parts are updated, reload the search results.
+    // 
+    let searchState = useAppSelector(state => state.search) 
     useEffect(() => {
-        // We shouldnt search if the search term is blank
-        if (searchTerm.length === 0) {
-            return
-        }
-
-        // https://docs.github.com/en/rest/reference/search#search-repositories
-        let searchRequestUrl = [
-            // The url for the REST api.
-            "https://api.github.com/search/repositories?q=",
-            
-            // Set the base search term to match against.
-            searchTerm,
-
-            // Sets which languages are allowed.
-            // If the list is empty, it will allow all of them.
-            `+language:${languages.join("+")}`,
-
-            // Set the way we want to sort the results.
-            `&sort=${searchSort}`
-        ].join("")
-
-        fetch(searchRequestUrl)
-            .then(response => response.json())
-            .then(response => response as GitHubSearchResponse)
-            .then(response => setSearchResults(response.items))
-            .catch(console.log)
-    }, [searchTerm, searchSort, languages])
+        searchRepos(searchState)
+            .then(repos => setSearchResults(repos))
+            .catch(err => console.log(err))
+    }, [searchState])
 
     return <div className={styles.search}>
         {/* Display search box. */}

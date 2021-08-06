@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { GitHubRepo, GitHubSearchResponse } from '../../common/github'
 
 export interface SearchState {
     searchTerm: string
@@ -6,7 +7,7 @@ export interface SearchState {
     languages: string[]
 }
 
-const initialState: SearchState = {
+export const initialState: SearchState = {
     searchTerm: "",
     searchSort: "best-match",
     languages: []
@@ -24,7 +25,7 @@ const counterSlice = createSlice({
         },
         addLanguage(state, action: PayloadAction<string>) {
             // Check too make sure were not adding a duplicate language.
-            for (let language in state.languages) {
+            for (let language of state.languages) {
                 if ( language === action.payload ) {
                     return
                 }
@@ -45,6 +46,38 @@ export const {
     addLanguage,
     removeLanguage
 } = counterSlice.actions
+
+export function makeSearchUrl(search: SearchState): string {
+    // Create the REST api request to search the repos
+    // https://docs.github.com/en/rest/reference/search#search-repositories
+    return [
+        // The url for the REST api.
+        "https://api.github.com/search/repositories?q=",
+        
+        // Set the base search term to match against.
+        search.searchTerm,
+
+        // Sets which languages are allowed.
+        // If the list is empty, it will allow all of them.
+        `+language:${search.languages.join("+")}`,
+
+        // Set the way we want to sort the results.
+        `&sort=${search.searchSort}`
+    ].join("")
+}
+
+export function searchRepos(search: SearchState): Promise<GitHubRepo[]> {
+    // We shouldnt search if the search term is blank
+    // Instead return a empty list
+    if (search.searchTerm.length === 0) {
+        return new Promise(done => done([]))
+    }
+    
+    return fetch(makeSearchUrl(search))
+        .then(response => response.json())
+        .then(response => response as GitHubSearchResponse)
+        .then(response => response.items)
+}
 
 export default counterSlice.reducer
 
