@@ -27,8 +27,9 @@ The search results are reload every time you add or remove a language.
 
 ### 5. Detailed Result Page ###
 
-The word 'detailed' is used loosly here. It shows the description and the starts, but thats about it.
-I figured this was more about proving I can use react Router than actually just listing out random repo info. 
+The detailed page has all the request info: owner name, repo name, description, stars & languages.
+It just displays this as some text, nothing fancy.
+I figured this was more about if I could use a router. 
 
 ### 6. Responsive Design ###
 
