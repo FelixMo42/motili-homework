@@ -3,7 +3,10 @@ import { render } from '@testing-library/react'
 import { Provider } from 'react-redux'
 import { store } from './app/store'
 
-import reducer, { makeSearchUrl, initialState, addLanguage, removeLanguage } from './SearchSlice'
+import reducer, {
+    makeSearchUrl, initialState,
+    addLanguage, removeLanguage
+} from './SearchSlice'
 
 test("test make search api request url", () => {
     expect(makeSearchUrl({
@@ -25,33 +28,49 @@ test("test make search api request url", () => {
     })).toBe("https://api.github.com/search/repositories?q=test+language:&sort=updated")
 })
 
-test("test language filter slice actions", () => {
+describe("search slice language filter", () => {
     let state = initialState
 
-    state = reducer(state, addLanguage("rust"))
-    expect(state.languages).toEqual(["rust"])
+    test("adds first language", () => {
+        state = reducer(state, addLanguage("rust"))
+        expect(state.languages).toEqual(["rust"])
+    })
 
-    state = reducer(state, addLanguage("rust"))
-    expect(state.languages).toEqual(["rust"])
+    test("dosen't add duplicate languages if only one", () => {
+        state = reducer(state, addLanguage("rust"))
+        expect(state.languages).toEqual(["rust"])
+    })
+   
+    test("adds second language", () => {
+        state = reducer(state, addLanguage("python"))
+        expect(state.languages).toEqual(["rust", "python"])
+    })
+
+    test("dosen't add duplicate language", () => {
+        state = reducer(state, addLanguage("rust"))
+        expect(state.languages).toEqual(["rust", "python"])
+
+        state = reducer(state, addLanguage("python"))
+        expect(state.languages).toEqual(["rust", "python"])
+    })
     
-    state = reducer(state, addLanguage("python"))
-    expect(state.languages).toEqual(["rust", "python"])
-    
-    state = reducer(state, addLanguage("rust"))
-    expect(state.languages).toEqual(["rust", "python"])
-    
-    state = reducer(state, addLanguage("python"))
-    expect(state.languages).toEqual(["rust", "python"])
+    test("removes second languages", () => {
+        state = reducer(state, removeLanguage("rust"))
+        expect(state.languages).toEqual(["python"])
+    })
 
-    state = reducer(state, removeLanguage("python"))
-    expect(state.languages).toEqual(["rust"]) 
+    test("can remove non existant languages", () => {
+        state = reducer(state, removeLanguage("rust"))
+        expect(state.languages).toEqual(["python"])
+    })
 
-    state = reducer(state, removeLanguage("python"))
-    expect(state.languages).toEqual(["rust"]) 
+    test("can remove first language", () => {
+        state = reducer(state, removeLanguage("python"))
+        expect(state.languages).toEqual([])
+    })
 
-    state = reducer(state, removeLanguage("rust"))
-    expect(state.languages).toEqual([]) 
-
-    state = reducer(state, removeLanguage("rust"))
-    expect(state.languages).toEqual([]) 
+    test("can remove from empty languages", () => {
+        state = reducer(state, removeLanguage("rust"))
+        expect(state.languages).toEqual([])
+    })
 })
