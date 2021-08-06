@@ -1,3 +1,6 @@
+# GitHub Repo Search #
+
+An example react app using the github api that lets you search github repos.
 
 ## Instructions ##
 
