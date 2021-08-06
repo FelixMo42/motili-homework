@@ -1,0 +1,18 @@
+.header {
+    height: 40px;
+    background-color: rgb(200, 200, 200);
+    margin-bottom: 5px;
+    padding: 2px 8px;
+}
+
+.icon {
+    font-size: 30px;
+    padding: auto;
+    text-decoration: none;
+}
+
+.title {
+    font-size: 23px;
+    color: rgb(80, 80, 80);
+    padding-left: 10px;
+}

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { GitHubRepo } from '../../common/github'
+import styles from './About.module.css'
 
 interface AboutParams {
     match: {
@@ -40,12 +41,13 @@ export default function About({match: {params: {owner, name}}}: AboutParams) {
             .catch(console.log)
     }, [])
 
-    // If the repo is undefined
+    // If the repo is undefined, display the message.
+    // By default this will say 'loading'.
     if ( repo === undefined ) {
         return <div>{message}</div>
     }
 
-    return <div>
+    return <div className={styles.about}>
         <div>{owner}/{name}</div>
         <div>{repo.description}</div>
         <br/>

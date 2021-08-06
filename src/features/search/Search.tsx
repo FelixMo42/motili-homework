@@ -4,6 +4,7 @@ import { useAppSelector } from '../../app/hooks'
 import styles from './Search.module.css'
 import Repo from './Repo'
 import { GitHubRepo } from '../../common/github'
+import { Provider } from 'react-redux'
 import {
     setSearchTerm, setSearchSort,
     addLanguage, removeLanguage,
