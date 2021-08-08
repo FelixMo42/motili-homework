@@ -83,13 +83,27 @@ function LangaugeSortSelector() {
 
 export default function Search() {
     let [searchResults, setSearchResults] = useState<GitHubRepo[]>([])
+    let [searchError, setSearchError] = useState<string>("")
 
     // 
     let searchState = useAppSelector(state => state.search) 
     useEffect(() => {
         searchRepos(searchState)
-            .then(repos => setSearchResults(repos))
-            .catch(err => console.log(err))
+            .then(repos => {
+                // Set the search results
+                setSearchResults(repos)
+
+                // Clear the error if there was one
+                setSearchError("")
+            
+            })
+            .catch(error => {
+                // If there is an error, clear previous results
+                setSearchResults([])
+
+                // Then set the error
+                setSearchError(error)
+            })
     }, [searchState])
 
     return <div className={styles.search}>
@@ -100,6 +114,9 @@ export default function Search() {
             <LangaugeSortSelector />
             <LangaugeFilter />
         </div>
+
+        {/* Display the searchError if there is one. */}
+        {searchError !== "" ? <div className={styles.error}>{searchError}</div> : ""}
 
         {/* Display search results. */}
         {searchResults.map(repo => <Repo key={repo.id} repo={repo} />)}

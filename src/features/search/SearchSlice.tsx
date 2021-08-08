@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { GitHubRepo, GitHubSearchResponse } from '../../common/github'
+import { GitHubRepo, GitHubSearchResponse, GitHubError } from '../../common/github'
 
 export interface SearchState {
     searchTerm: string
@@ -72,11 +72,20 @@ export function searchRepos(search: SearchState): Promise<GitHubRepo[]> {
     if (search.searchTerm.length === 0) {
         return new Promise(done => done([]))
     }
-    
-    return fetch(makeSearchUrl(search))
-        .then(response => response.json())
-        .then(response => response as GitHubSearchResponse)
-        .then(response => response.items)
+
+    return new Promise(async (done, fail) => {
+        let response = await fetch(makeSearchUrl(search))
+            .then(response => response.json())
+            .then(response => response as Object)
+        
+        if ("message" in response) {
+            let error = response as GitHubError
+            fail(error.message)
+        } else {
+            let searchResponse = response as GitHubSearchResponse
+            done(searchResponse.items)
+        }
+    })
 }
 
 export default counterSlice.reducer

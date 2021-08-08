@@ -16,3 +16,6 @@ export interface GitHubRepo {
     watchers_count: number,
 }
 
+export interface GitHubError {
+    message: string,
+}
