@@ -29,16 +29,17 @@ export function LangaugeFilter() {
         <input
             type="text"
             className={styles.languageInput}
-            placeholder="language"
+            placeholder="language filter"
             onKeyUp={event => {
-                if ( event.key === "Enter" ) {
+                if ( event.key === "Enter" || event.key === " " ) {
                     let element = event.target as HTMLInputElement
-                    let value = element.value
+                    let value = element.value.trim()
                     element.value = ""
                     store.dispatch(addLanguage(value))
                 }
             }}
-        />
+        >
+        </input>
     </span>
 }
 
@@ -73,9 +74,9 @@ function LangaugeSortSelector() {
             }}
         >
             <option value="best-match">best match</option>
-            <option value="stars">stars</option>
-            <option value="forks">forks</option>
-            <option value="updated">updated</option>
+            <option value="stars">most stars</option>
+            <option value="forks">most forks</option>
+            <option value="updated">recently updated</option>
         </select>
     </div>
 }
