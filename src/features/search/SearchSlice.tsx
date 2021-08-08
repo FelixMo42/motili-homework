@@ -1,5 +1,8 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { GitHubRepo, GitHubSearchResponse, GitHubError } from '../../common/github'
+import {
+    GitHubRepo, GitHubSearchResponse, GitHubError,
+    makeGitHubRequest
+} from '../../common/github'
 
 export interface SearchState {
     searchTerm: string
@@ -51,8 +54,8 @@ export function makeSearchUrl(search: SearchState): string {
     // Create the REST api request to search the repos
     // https://docs.github.com/en/rest/reference/search#search-repositories
     return [
-        // The url for the REST api.
-        "https://api.github.com/search/repositories?q=",
+        // The path for the search REST api.
+        "/search/repositories?q=",
         
         // Set the base search term to match against.
         search.searchTerm,
@@ -73,19 +76,10 @@ export function searchRepos(search: SearchState): Promise<GitHubRepo[]> {
         return new Promise(done => done([]))
     }
 
-    return new Promise(async (done, fail) => {
-        let response = await fetch(makeSearchUrl(search))
-            .then(response => response.json())
-            .then(response => response as Object)
-        
-        if ("message" in response) {
-            let error = response as GitHubError
-            fail(error.message)
-        } else {
-            let searchResponse = response as GitHubSearchResponse
-            done(searchResponse.items)
-        }
-    })
+    // Make the api request, then cast the result to the correct type and get the items.
+    return makeGitHubRequest(makeSearchUrl(search))
+        .then(response => response as GitHubSearchResponse)
+        .then(response => response.items)
 }
 
 export default counterSlice.reducer

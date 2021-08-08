@@ -13,6 +13,7 @@
 
 .title {
     font-size: 23px;
+    text-decoration: none;
     color: rgb(80, 80, 80);
     padding-left: 10px;
 }
