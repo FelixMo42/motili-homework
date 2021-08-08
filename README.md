@@ -69,4 +69,3 @@ I have some actually good responsive design for php templates I've made, so I ca
 
 I have some testing for the SearchSlice reducer and for making the rest api urls.
 It even helped my catch a bug in the addLanguage code.
-I also some basic intergration testing for the Search element.
